@@ -2,9 +2,9 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.ecSimpleTransform = {}));
-}(this, (function (exports) { 'use strict';
+})(this, (function (exports) { 'use strict';
 
-    var transform = {
+    var transform$1 = {
         type: 'ecSimpleTransform:id',
         transform: function (params) {
             var upstream = params.upstream;
@@ -99,7 +99,7 @@
         };
         return ResultDimInfoInternal;
     }());
-    var transform$1 = {
+    var transform = {
         type: 'ecSimpleTransform:aggregate',
         transform: function (params) {
             var upstream = params.upstream;
@@ -353,10 +353,10 @@
         return quantile(gatheredValues, percent);
     }
 
-    exports.aggregate = transform$1;
-    exports.id = transform;
+    exports.aggregate = transform;
+    exports.id = transform$1;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
-})));
+}));
 //# sourceMappingURL=ecSimpleTransform.js.map
