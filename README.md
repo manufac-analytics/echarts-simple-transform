@@ -8,7 +8,7 @@ There are some simple data transformers for Apache ECharts 5 in this library. So
 ### Differences vis-à-vis the OG [100pah/echarts-simple-transform](https://github.com/100pah/echarts-simple-transform)
 
 - Exports type definitions so that TS usage is simplified.
-- [CodeSandBox](https://codesandbox.io/s/echarts-simple-transform-ifdnc?file=/index.html)
+- During grouping if a group has only 1 element, the `SUM` aggregation should return that element instead of `0`. [CodeSandBox](https://codesandbox.io/s/echarts-simple-transform-ifdnc?file=/index.html)
 
 
 ### Aggregate Transform
