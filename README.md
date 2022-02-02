@@ -5,7 +5,7 @@ This is a non-official library.
 There are some simple data transformers for Apache ECharts 5 in this library. Some of them might be migrated as ECharts built-in transforms in future.
 
 
-## Difference from the OG [100pah/echarts-simple-transform](https://github.com/100pah/echarts-simple-transform)
+## Differences vis-à-vis the OG [100pah/echarts-simple-transform](https://github.com/100pah/echarts-simple-transform)
 
 - Exports type definitions so that TS usage is simplified.
 
