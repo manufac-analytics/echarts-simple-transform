@@ -11,7 +11,7 @@
   "jsdelivr": "dist/ecSimpleTransform.min.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/100pah/echarts-simple-transform.git"
+    "url": "https://github.com/manufac-analytics/echarts-simple-transform.git"
   },
   "scripts": {
     "build": "node build/build.js",
