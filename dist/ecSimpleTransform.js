@@ -142,7 +142,7 @@
             var dimInfoInUpstream = upstream.getDimensionInfo(resultDimInfoConfig.from);
             assert(dimInfoInUpstream, 'Can not find dimension by `from`: ' + resultDimInfoConfig.from);
             var rawMethod = resultDimInfoConfig.method;
-            assert(groupByDimInfo.index !== dimInfoInUpstream.index || rawMethod == null, "Dimension " + dimInfoInUpstream.name + " is the \"groupBy\" dimension, must not have any \"method\".");
+            assert(groupByDimInfo.index !== dimInfoInUpstream.index || rawMethod == null, "Dimension ".concat(dimInfoInUpstream.name, " is the \"groupBy\" dimension, must not have any \"method\"."));
             var method = normalizeMethod(rawMethod);
             assert(method, 'method is required');
             var name_1 = resultDimInfoConfig.name != null ? resultDimInfoConfig.name : dimInfoInUpstream.name;
@@ -216,7 +216,7 @@
         methodInternal = hasOwn(METHOD_ALIAS, methodInternal)
             ? METHOD_ALIAS[methodInternal]
             : methodInternal;
-        assert(hasOwn(METHOD_INTERNAL, methodInternal), "Illegal method " + method + ".");
+        assert(hasOwn(METHOD_INTERNAL, methodInternal), "Illegal method ".concat(method, "."));
         return methodInternal;
     }
     var createCollectionResultLine = function (upstream, dataIndex, collectionDimInfoList, groupByDimInfo, groupByVal) {
