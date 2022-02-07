@@ -1,8 +1,10 @@
 # echarts-simple-transform
 
-This is a non-official library.
+This is a non-official library, and is a fork of [100pah/echarts-simple-transform](https://github.com/100pah/echarts-simple-transform).
 
 There are some simple data transformers for Apache ECharts 5 in this library. Some of them might be migrated as ECharts built-in transforms in future.
+
+There's an [active issue](https://github.com/apache/echarts/issues/15306) in the Apache ECharts repository. It **might** speed things up if you up vote that issue. Once that feature is implemented as a core feature, we can get rid of this plugin.
 
 
 ### Differences vis-à-vis the OG [100pah/echarts-simple-transform](https://github.com/100pah/echarts-simple-transform)
