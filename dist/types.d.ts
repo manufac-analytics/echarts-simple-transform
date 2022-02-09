@@ -44,7 +44,7 @@ export interface ExternalDataTransformResultItem {
     data: OptionSourceDataArrayRows | OptionSourceDataObjectRows;
     dimensions?: DimensionDefinitionLoose[];
 }
-interface ExternalDataTransformParam<TO extends DataTransformOption = DataTransformOption> {
+export interface ExternalDataTransformParam<TO extends DataTransformOption = DataTransformOption> {
     upstream: ExternalSource;
     upstreamList: ExternalSource[];
     config: TO['config'];

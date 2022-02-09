@@ -15,6 +15,7 @@ There's an [active issue](https://github.com/apache/echarts/issues/15306) in the
 - The bundles are generated with TSC `target` as `ES2017` instead of `ES3`.
 - The bundles are generated with TSC `module` as `ESNext` instead of `ES2015`.
 - Add `AggregateTransformConfig`.
+- Export `ExternalDataTransformParam`.
 
 ### Aggregate Transform
 ```js

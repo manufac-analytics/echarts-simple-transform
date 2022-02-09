@@ -104,7 +104,7 @@ export interface ExternalDataTransformResultItem {
 }
 
 
-interface ExternalDataTransformParam<TO extends DataTransformOption = DataTransformOption> {
+export interface ExternalDataTransformParam<TO extends DataTransformOption = DataTransformOption> {
     // This is the first source in upstreamList. In most cases,
     // there is only one upstream source.
     upstream: ExternalSource;
