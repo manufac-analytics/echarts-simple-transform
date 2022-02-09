@@ -519,13 +519,13 @@ const lineCreator: {
             / collectLine[dimInfo.getCollectionInfo('COUNT').indexInLine];
     },
     // FIXME: refactor
-    'Q1'(upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal) {
+    'Q1'(_upstream, _dataIndex, dimInfo, groupByDimInfo, groupByVal) {
         return lineCreatorForQ(0.25, dimInfo, groupByDimInfo, groupByVal);
     },
-    'Q2'(upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal) {
+    'Q2'(_upstream, _dataIndex, dimInfo, groupByDimInfo, groupByVal) {
         return lineCreatorForQ(0.5, dimInfo, groupByDimInfo, groupByVal);
     },
-    'Q3'(upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal) {
+    'Q3'(_upstream, _dataIndex, dimInfo, groupByDimInfo, groupByVal) {
         return lineCreatorForQ(0.75, dimInfo, groupByDimInfo, groupByVal);
     }
 };
@@ -565,13 +565,13 @@ const lineUpdater: {
             + (upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream) as number)
             / collectLine[dimInfo.getCollectionInfo('COUNT').indexInLine];
     },
-    'Q1'(val, upstream, dataIndex, dimInfo) {
+    'Q1'(val, _upstream, _dataIndex, _dimInfo) {
         return val;
     },
-    'Q2'(val, upstream, dataIndex, dimInfo) {
+    'Q2'(val, _upstream, _dataIndex, _dimInfo) {
         return val;
     },
-    'Q3'(val, upstream, dataIndex, dimInfo) {
+    'Q3'(val, _upstream, _dataIndex, _dimInfo) {
         return val;
     }
 };

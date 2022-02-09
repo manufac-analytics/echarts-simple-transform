@@ -25,3 +25,4 @@ declare type AggregateMethodLoose = AggregateMethodInternal | 'sum' | 'count' | 
 declare type AggregateMethodInternal = keyof typeof METHOD_INTERNAL;
 export declare const transform: ExternalDataTransform<AggregateTransformOption>;
 export {};
+//# sourceMappingURL=aggregate.d.ts.map

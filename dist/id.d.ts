@@ -7,3 +7,4 @@ export interface IdTransformOption extends DataTransformOption {
     };
 }
 export declare const transform: ExternalDataTransform<IdTransformOption>;
+//# sourceMappingURL=id.d.ts.map

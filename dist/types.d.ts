@@ -84,3 +84,4 @@ export interface ExternalSource {
     convertValue(rawVal: unknown, dimInfo: ExternalDimensionDefinition): ParsedValue;
 }
 export {};
+//# sourceMappingURL=types.d.ts.map

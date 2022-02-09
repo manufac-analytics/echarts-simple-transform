@@ -4,18 +4,18 @@
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.ecSimpleTransform = {}));
 })(this, (function (exports) { 'use strict';
 
-    var transform$1 = {
+    const transform$1 = {
         type: 'ecSimpleTransform:id',
         transform: function (params) {
-            var upstream = params.upstream;
-            var config = params.config;
-            var dimensionIndex = config.dimensionIndex;
-            var dimensionName = config.dimensionName;
-            var dimsDef = upstream.cloneAllDimensionInfo();
+            const upstream = params.upstream;
+            const config = params.config;
+            const dimensionIndex = config.dimensionIndex;
+            const dimensionName = config.dimensionName;
+            const dimsDef = upstream.cloneAllDimensionInfo();
             dimsDef[dimensionIndex] = dimensionName;
-            var data = upstream.cloneRawData();
-            for (var i = 0, len = data.length; i < len; i++) {
-                var line = data[i];
+            const data = upstream.cloneRawData();
+            for (let i = 0, len = data.length; i < len; i++) {
+                const line = data[i];
                 line[dimensionIndex] = i;
             }
             return {
@@ -34,14 +34,14 @@
         return own.hasOwnProperty(prop);
     }
     function quantile(ascArr, p) {
-        var H = (ascArr.length - 1) * p + 1;
-        var h = Math.floor(H);
-        var v = +ascArr[h - 1];
-        var e = H - h;
+        const H = (ascArr.length - 1) * p + 1;
+        const h = Math.floor(H);
+        const v = +ascArr[h - 1];
+        const e = H - h;
         return e ? v + e * (ascArr[h] - v) : v;
     }
 
-    var METHOD_INTERNAL = {
+    const METHOD_INTERNAL = {
         'SUM': true,
         'COUNT': true,
         'FIRST': true,
@@ -52,19 +52,19 @@
         'MIN': true,
         'MAX': true
     };
-    var METHOD_NEEDS_COLLECT = {
+    const METHOD_NEEDS_COLLECT = {
         AVERAGE: ['COUNT']
     };
-    var METHOD_NEEDS_GATHER_VALUES = {
+    const METHOD_NEEDS_GATHER_VALUES = {
         Q1: true,
         Q2: true,
         Q3: true
     };
-    var METHOD_ALIAS = {
+    const METHOD_ALIAS = {
         MEDIAN: 'Q2'
     };
-    var ResultDimInfoInternal = (function () {
-        function ResultDimInfoInternal(index, indexInUpstream, method, name, needGatherValues) {
+    class ResultDimInfoInternal {
+        constructor(index, indexInUpstream, method, name, needGatherValues) {
             this.collectionInfoList = [];
             this.gatheredValuesByGroup = {};
             this.gatheredValuesNoGroup = [];
@@ -76,19 +76,19 @@
             this.indexInUpstream = indexInUpstream;
             this.needGatherValues = needGatherValues;
         }
-        ResultDimInfoInternal.prototype.addCollectionInfo = function (item) {
+        addCollectionInfo(item) {
             this._collectionInfoMap[item.method] = this.collectionInfoList.length;
             this.collectionInfoList.push(item);
-        };
-        ResultDimInfoInternal.prototype.getCollectionInfo = function (method) {
+        }
+        getCollectionInfo(method) {
             return this.collectionInfoList[this._collectionInfoMap[method]];
-        };
-        ResultDimInfoInternal.prototype.gatherValue = function (groupByDimInfo, groupVal, value) {
+        }
+        gatherValue(groupByDimInfo, groupVal, value) {
             value = +value;
             if (groupByDimInfo) {
                 if (groupVal != null) {
-                    var groupValStr = groupVal + '';
-                    var values = this.gatheredValuesByGroup[groupValStr]
+                    const groupValStr = groupVal + '';
+                    const values = this.gatheredValuesByGroup[groupValStr]
                         || (this.gatheredValuesByGroup[groupValStr] = []);
                     values.push(value);
                 }
@@ -96,34 +96,33 @@
             else {
                 this.gatheredValuesNoGroup.push(value);
             }
-        };
-        return ResultDimInfoInternal;
-    }());
-    var transform = {
+        }
+    }
+    const transform = {
         type: 'ecSimpleTransform:aggregate',
         transform: function (params) {
-            var upstream = params.upstream;
-            var config = params.config;
-            var groupByDimInfo = prepareGroupByDimInfo(config, upstream);
-            var _a = prepareDimensions(config, upstream, groupByDimInfo), finalResultDimInfoList = _a.finalResultDimInfoList, collectionDimInfoList = _a.collectionDimInfoList;
-            var collectionResult;
+            const upstream = params.upstream;
+            const config = params.config;
+            const groupByDimInfo = prepareGroupByDimInfo(config, upstream);
+            const { finalResultDimInfoList, collectionDimInfoList } = prepareDimensions(config, upstream, groupByDimInfo);
+            let collectionResult;
             if (collectionDimInfoList.length) {
                 collectionResult = travel(groupByDimInfo, upstream, collectionDimInfoList, createCollectionResultLine, updateCollectionResultLine);
             }
-            for (var i = 0; i < collectionDimInfoList.length; i++) {
-                var dimInfo = collectionDimInfoList[i];
+            for (let i = 0; i < collectionDimInfoList.length; i++) {
+                const dimInfo = collectionDimInfoList[i];
                 dimInfo.__collectionResult = collectionResult;
                 asc(dimInfo.gatheredValuesNoGroup);
-                var gatheredValuesByGroup = dimInfo.gatheredValuesByGroup;
-                for (var key in gatheredValuesByGroup) {
+                const gatheredValuesByGroup = dimInfo.gatheredValuesByGroup;
+                for (const key in gatheredValuesByGroup) {
                     if (hasOwn(gatheredValuesByGroup, key)) {
                         asc(gatheredValuesByGroup[key]);
                     }
                 }
             }
-            var finalResult = travel(groupByDimInfo, upstream, finalResultDimInfoList, createFinalResultLine, updateFinalResultLine);
-            var dimensions = [];
-            for (var i = 0; i < finalResultDimInfoList.length; i++) {
+            const finalResult = travel(groupByDimInfo, upstream, finalResultDimInfoList, createFinalResultLine, updateFinalResultLine);
+            const dimensions = [];
+            for (let i = 0; i < finalResultDimInfoList.length; i++) {
                 dimensions.push(finalResultDimInfoList[i].name);
             }
             return {
@@ -133,26 +132,26 @@
         }
     };
     function prepareDimensions(config, upstream, groupByDimInfo) {
-        var resultDimensionsConfig = config.resultDimensions;
-        var finalResultDimInfoList = [];
-        var collectionDimInfoList = [];
-        var gIndexInLine = 0;
-        for (var i = 0; i < resultDimensionsConfig.length; i++) {
-            var resultDimInfoConfig = resultDimensionsConfig[i];
-            var dimInfoInUpstream = upstream.getDimensionInfo(resultDimInfoConfig.from);
+        const resultDimensionsConfig = config.resultDimensions;
+        const finalResultDimInfoList = [];
+        const collectionDimInfoList = [];
+        let gIndexInLine = 0;
+        for (let i = 0; i < resultDimensionsConfig.length; i++) {
+            const resultDimInfoConfig = resultDimensionsConfig[i];
+            const dimInfoInUpstream = upstream.getDimensionInfo(resultDimInfoConfig.from);
             assert(dimInfoInUpstream, 'Can not find dimension by `from`: ' + resultDimInfoConfig.from);
-            var rawMethod = resultDimInfoConfig.method;
-            assert(groupByDimInfo.index !== dimInfoInUpstream.index || rawMethod == null, "Dimension ".concat(dimInfoInUpstream.name, " is the \"groupBy\" dimension, must not have any \"method\"."));
-            var method = normalizeMethod(rawMethod);
+            const rawMethod = resultDimInfoConfig.method;
+            assert(groupByDimInfo.index !== dimInfoInUpstream.index || rawMethod == null, `Dimension ${dimInfoInUpstream.name} is the "groupBy" dimension, must not have any "method".`);
+            const method = normalizeMethod(rawMethod);
             assert(method, 'method is required');
-            var name_1 = resultDimInfoConfig.name != null ? resultDimInfoConfig.name : dimInfoInUpstream.name;
-            var finalResultDimInfo = new ResultDimInfoInternal(finalResultDimInfoList.length, dimInfoInUpstream.index, method, name_1, hasOwn(METHOD_NEEDS_GATHER_VALUES, method));
+            const name = resultDimInfoConfig.name != null ? resultDimInfoConfig.name : dimInfoInUpstream.name;
+            const finalResultDimInfo = new ResultDimInfoInternal(finalResultDimInfoList.length, dimInfoInUpstream.index, method, name, hasOwn(METHOD_NEEDS_GATHER_VALUES, method));
             finalResultDimInfoList.push(finalResultDimInfo);
-            var needCollect = false;
+            let needCollect = false;
             if (hasOwn(METHOD_NEEDS_COLLECT, method)) {
                 needCollect = true;
-                var collectionTargetMethods = METHOD_NEEDS_COLLECT[method];
-                for (var j = 0; j < collectionTargetMethods.length; j++) {
+                const collectionTargetMethods = METHOD_NEEDS_COLLECT[method];
+                for (let j = 0; j < collectionTargetMethods.length; j++) {
                     finalResultDimInfo.addCollectionInfo({
                         method: collectionTargetMethods[j],
                         indexInLine: gIndexInLine++
@@ -166,11 +165,11 @@
                 collectionDimInfoList.push(finalResultDimInfo);
             }
         }
-        return { collectionDimInfoList: collectionDimInfoList, finalResultDimInfoList: finalResultDimInfoList };
+        return { collectionDimInfoList, finalResultDimInfoList };
     }
     function prepareGroupByDimInfo(config, upstream) {
-        var groupByConfig = config.groupBy;
-        var groupByDimInfo;
+        const groupByConfig = config.groupBy;
+        let groupByDimInfo;
         if (groupByConfig != null) {
             groupByDimInfo = upstream.getDimensionInfo(groupByConfig);
             assert(groupByDimInfo, 'Can not find dimension by `groupBy`: ' + groupByConfig);
@@ -178,96 +177,96 @@
         return groupByDimInfo;
     }
     function travel(groupByDimInfo, upstream, resultDimInfoList, doCreate, doUpdate) {
-        var outList = [];
-        var mapByGroup;
+        const outList = [];
+        let mapByGroup;
         if (groupByDimInfo) {
             mapByGroup = {};
-            for (var dataIndex = 0, len = upstream.count(); dataIndex < len; dataIndex++) {
-                var groupByVal = upstream.retrieveValue(dataIndex, groupByDimInfo.index);
+            for (let dataIndex = 0, len = upstream.count(); dataIndex < len; dataIndex++) {
+                const groupByVal = upstream.retrieveValue(dataIndex, groupByDimInfo.index);
                 if (groupByVal == null) {
                     continue;
                 }
-                var groupByValStr = groupByVal + '';
+                const groupByValStr = groupByVal + '';
                 if (!hasOwn(mapByGroup, groupByValStr)) {
-                    var newLine = doCreate(upstream, dataIndex, resultDimInfoList, groupByDimInfo, groupByVal);
+                    const newLine = doCreate(upstream, dataIndex, resultDimInfoList, groupByDimInfo, groupByVal);
                     outList.push(newLine);
                     mapByGroup[groupByValStr] = newLine;
                 }
                 else {
-                    var targetLine = mapByGroup[groupByValStr];
+                    const targetLine = mapByGroup[groupByValStr];
                     doUpdate(upstream, dataIndex, targetLine, resultDimInfoList, groupByDimInfo, groupByVal);
                 }
             }
         }
         else {
-            var targetLine = doCreate(upstream, 0, resultDimInfoList);
+            const targetLine = doCreate(upstream, 0, resultDimInfoList);
             outList.push(targetLine);
-            for (var dataIndex = 1, len = upstream.count(); dataIndex < len; dataIndex++) {
+            for (let dataIndex = 1, len = upstream.count(); dataIndex < len; dataIndex++) {
                 doUpdate(upstream, dataIndex, targetLine, resultDimInfoList);
             }
         }
-        return { mapByGroup: mapByGroup, outList: outList };
+        return { mapByGroup, outList };
     }
     function normalizeMethod(method) {
         if (method == null) {
             return 'FIRST';
         }
-        var methodInternal = method.toUpperCase();
+        let methodInternal = method.toUpperCase();
         methodInternal = hasOwn(METHOD_ALIAS, methodInternal)
             ? METHOD_ALIAS[methodInternal]
             : methodInternal;
-        assert(hasOwn(METHOD_INTERNAL, methodInternal), "Illegal method ".concat(method, "."));
+        assert(hasOwn(METHOD_INTERNAL, methodInternal), `Illegal method ${method}.`);
         return methodInternal;
     }
-    var createCollectionResultLine = function (upstream, dataIndex, collectionDimInfoList, groupByDimInfo, groupByVal) {
-        var newLine = [];
-        for (var i = 0; i < collectionDimInfoList.length; i++) {
-            var dimInfo = collectionDimInfoList[i];
-            var collectionInfoList = dimInfo.collectionInfoList;
-            for (var j = 0; j < collectionInfoList.length; j++) {
-                var collectionInfo = collectionInfoList[j];
+    const createCollectionResultLine = (upstream, dataIndex, collectionDimInfoList, groupByDimInfo, groupByVal) => {
+        const newLine = [];
+        for (let i = 0; i < collectionDimInfoList.length; i++) {
+            const dimInfo = collectionDimInfoList[i];
+            const collectionInfoList = dimInfo.collectionInfoList;
+            for (let j = 0; j < collectionInfoList.length; j++) {
+                const collectionInfo = collectionInfoList[j];
                 newLine[collectionInfo.indexInLine] = +lineCreator[collectionInfo.method](upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal);
             }
             if (dimInfo.needGatherValues) {
-                var val = upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream);
+                const val = upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream);
                 dimInfo.gatherValue(groupByDimInfo, groupByVal, val);
             }
         }
         return newLine;
     };
-    var updateCollectionResultLine = function (upstream, dataIndex, targetLine, collectionDimInfoList, groupByDimInfo, groupByVal) {
-        for (var i = 0; i < collectionDimInfoList.length; i++) {
-            var dimInfo = collectionDimInfoList[i];
-            var collectionInfoList = dimInfo.collectionInfoList;
-            for (var j = 0; j < collectionInfoList.length; j++) {
-                var collectionInfo = collectionInfoList[j];
-                var indexInLine = collectionInfo.indexInLine;
+    const updateCollectionResultLine = (upstream, dataIndex, targetLine, collectionDimInfoList, groupByDimInfo, groupByVal) => {
+        for (let i = 0; i < collectionDimInfoList.length; i++) {
+            const dimInfo = collectionDimInfoList[i];
+            const collectionInfoList = dimInfo.collectionInfoList;
+            for (let j = 0; j < collectionInfoList.length; j++) {
+                const collectionInfo = collectionInfoList[j];
+                const indexInLine = collectionInfo.indexInLine;
                 targetLine[indexInLine] = +lineUpdater[collectionInfo.method](targetLine[indexInLine], upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal);
             }
             if (dimInfo.needGatherValues) {
-                var val = upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream);
+                const val = upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream);
                 dimInfo.gatherValue(groupByDimInfo, groupByVal, val);
             }
         }
     };
-    var createFinalResultLine = function (upstream, dataIndex, finalResultDimInfoList, groupByDimInfo, groupByVal) {
-        var newLine = [];
-        for (var i = 0; i < finalResultDimInfoList.length; i++) {
-            var dimInfo = finalResultDimInfoList[i];
-            var method = dimInfo.method;
+    const createFinalResultLine = (upstream, dataIndex, finalResultDimInfoList, groupByDimInfo, groupByVal) => {
+        const newLine = [];
+        for (let i = 0; i < finalResultDimInfoList.length; i++) {
+            const dimInfo = finalResultDimInfoList[i];
+            const method = dimInfo.method;
             newLine[i] = isGroupByDimension(groupByDimInfo, dimInfo)
                 ? groupByVal
                 : lineCreator[method](upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal);
         }
         return newLine;
     };
-    var updateFinalResultLine = function (upstream, dataIndex, targetLine, finalResultDimInfoList, groupByDimInfo, groupByVal) {
-        for (var i = 0; i < finalResultDimInfoList.length; i++) {
-            var dimInfo = finalResultDimInfoList[i];
+    const updateFinalResultLine = (upstream, dataIndex, targetLine, finalResultDimInfoList, groupByDimInfo, groupByVal) => {
+        for (let i = 0; i < finalResultDimInfoList.length; i++) {
+            const dimInfo = finalResultDimInfoList[i];
             if (isGroupByDimension(groupByDimInfo, dimInfo)) {
                 continue;
             }
-            var method = dimInfo.method;
+            const method = dimInfo.method;
             targetLine[i] = lineUpdater[method](targetLine[i], upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal);
         }
     };
@@ -275,79 +274,79 @@
         return groupByDimInfo && targetDimInfo.indexInUpstream === groupByDimInfo.index;
     }
     function asc(list) {
-        list.sort(function (a, b) {
+        list.sort((a, b) => {
             return a - b;
         });
     }
-    var lineCreator = {
-        'SUM': function (upstream, dataIndex, dimInfo) {
+    const lineCreator = {
+        'SUM'(upstream, dataIndex, dimInfo) {
             return upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream);
         },
-        'COUNT': function () {
+        'COUNT'() {
             return 1;
         },
-        'FIRST': function (upstream, dataIndex, dimInfo) {
+        'FIRST'(upstream, dataIndex, dimInfo) {
             return upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream);
         },
-        'MIN': function (upstream, dataIndex, dimInfo) {
+        'MIN'(upstream, dataIndex, dimInfo) {
             return upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream);
         },
-        'MAX': function (upstream, dataIndex, dimInfo) {
+        'MAX'(upstream, dataIndex, dimInfo) {
             return upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream);
         },
-        'AVERAGE': function (upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal) {
-            var collectLine = groupByDimInfo
+        'AVERAGE'(upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal) {
+            const collectLine = groupByDimInfo
                 ? dimInfo.__collectionResult.mapByGroup[groupByVal + '']
                 : dimInfo.__collectionResult.outList[0];
             return upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream)
                 / collectLine[dimInfo.getCollectionInfo('COUNT').indexInLine];
         },
-        'Q1': function (upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal) {
+        'Q1'(_upstream, _dataIndex, dimInfo, groupByDimInfo, groupByVal) {
             return lineCreatorForQ(0.25, dimInfo, groupByDimInfo, groupByVal);
         },
-        'Q2': function (upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal) {
+        'Q2'(_upstream, _dataIndex, dimInfo, groupByDimInfo, groupByVal) {
             return lineCreatorForQ(0.5, dimInfo, groupByDimInfo, groupByVal);
         },
-        'Q3': function (upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal) {
+        'Q3'(_upstream, _dataIndex, dimInfo, groupByDimInfo, groupByVal) {
             return lineCreatorForQ(0.75, dimInfo, groupByDimInfo, groupByVal);
         }
     };
-    var lineUpdater = {
-        'SUM': function (val, upstream, dataIndex, dimInfo) {
+    const lineUpdater = {
+        'SUM'(val, upstream, dataIndex, dimInfo) {
             return val + upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream);
         },
-        'COUNT': function (val) {
+        'COUNT'(val) {
             return val + 1;
         },
-        'FIRST': function (val) {
+        'FIRST'(val) {
             return val;
         },
-        'MIN': function (val, upstream, dataIndex, dimInfo) {
+        'MIN'(val, upstream, dataIndex, dimInfo) {
             return Math.min(val, upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream));
         },
-        'MAX': function (val, upstream, dataIndex, dimInfo) {
+        'MAX'(val, upstream, dataIndex, dimInfo) {
             return Math.max(val, upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream));
         },
-        'AVERAGE': function (val, upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal) {
-            var collectLine = groupByDimInfo
+        'AVERAGE'(val, upstream, dataIndex, dimInfo, groupByDimInfo, groupByVal) {
+            const collectLine = groupByDimInfo
                 ? dimInfo.__collectionResult.mapByGroup[groupByVal + '']
                 : dimInfo.__collectionResult.outList[0];
             return val
                 + upstream.retrieveValue(dataIndex, dimInfo.indexInUpstream)
                     / collectLine[dimInfo.getCollectionInfo('COUNT').indexInLine];
         },
-        'Q1': function (val, upstream, dataIndex, dimInfo) {
+        'Q1'(val, _upstream, _dataIndex, _dimInfo) {
             return val;
         },
-        'Q2': function (val, upstream, dataIndex, dimInfo) {
+        'Q2'(val, _upstream, _dataIndex, _dimInfo) {
             return val;
         },
-        'Q3': function (val, upstream, dataIndex, dimInfo) {
+        'Q3'(val, _upstream, _dataIndex, _dimInfo) {
             return val;
         }
     };
     function lineCreatorForQ(percent, dimInfo, groupByDimInfo, groupByVal) {
-        var gatheredValues = groupByDimInfo
+        const gatheredValues = groupByDimInfo
             ? dimInfo.gatheredValuesByGroup[groupByVal + '']
             : dimInfo.gatheredValuesNoGroup;
         return quantile(gatheredValues, percent);

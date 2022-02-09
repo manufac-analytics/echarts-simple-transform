@@ -118,28 +118,7 @@ function createRollupConfig({ min } = {}) {
     return {
         rollupConfig: {
             plugins: [
-                typescriptPlugin({
-                    // tsconfig: nodePath.resolve(projDir, 'tsconfig.json'),
-                    tsconfigOverride: {
-                        // See: https://www.typescriptlang.org/docs/handbook/compiler-options.html
-                        compilerOptions: {
-                            // By default: target === "ES3" or "ES5" ? "CommonJS" : "ES6".
-                            // But rollup don't use CommonJS.
-                            module: 'ES2015',
-                            sourceMap: true,
-                            // Use the esm d.ts
-                            declaration: true
-                        }
-                        // include: include,
-                        // exclude: exclude || []
-                    },
-                    clean: true,
-                    // include: [
-                    //     nodePath.resolve(projDir, 'src/**/*.ts')
-                    // ],
-                    // exclude: exclude || []
-                }),
-                // nodeResolvePlugin()
+                typescriptPlugin(),
             ],
             input: nodePath.resolve(projDir, `src/index.ts`),
             watch: {
