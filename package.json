@@ -1,6 +1,6 @@
 {
   "name": "@manufac-analytics/echarts-simple-transform",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Some simple data transforms for Apache ECharts 5",
   "license": "Apache-2.0",
   "main": "dist/ecSimpleTransform.js",
