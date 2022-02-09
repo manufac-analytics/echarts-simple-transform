@@ -62,23 +62,24 @@ import { assert, hasOwn, quantile } from './util';
  * ```
  */
 
+export interface AggregateTransformConfig {
+    resultDimensions: {
+        // Optional. The name of the result dimensions.
+        // If not provided, inherit the name from `from`.
+        name: DimensionName;
+        // Mandatory. `from` is used to reference dimension from `source`.
+        from: DimensionLoose;
+        // Optional. Aggregate method. Currently only these method supported.
+        // If not provided, use `'first'`.
+        method: AggregateMethodLoose;
+    }[];
+    // Optional
+    groupBy: DimensionLoose;
+}
+
 export interface AggregateTransformOption extends DataTransformOption {
     type: 'ecSimpleTransform:aggregate';
-    config: {
-        // Mandatory
-        resultDimensions: {
-            // Optional. The name of the result dimensions.
-            // If not provided, inherit the name from `from`.
-            name: DimensionName;
-            // Mandatory. `from` is used to reference dimension from `source`.
-            from: DimensionLoose;
-            // Optional. Aggregate method. Currently only these method supported.
-            // If not provided, use `'first'`.
-            method: AggregateMethodLoose;
-        }[];
-        // Optional
-        groupBy: DimensionLoose;
-    };
+    config: AggregateTransformConfig;
 }
 
 const METHOD_INTERNAL = {
