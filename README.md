@@ -11,10 +11,10 @@ There's an [active issue](https://github.com/apache/echarts/issues/15306) in the
 
 - Exports type definitions so that TS usage is simplified.
 - During grouping if a group has only 1 element, the `SUM` aggregation should return that element instead of `0`. [CodeSandBox](https://codesandbox.io/s/echarts-simple-transform-ifdnc?file=/index.html)
-- Exports `AggregateTransformConfig`
+- Add `OptionSourceData` and update `ExternalSource["cloneRawData"]` return type to `OptionSourceData`.
 - The bundles are generated with TSC `target` as `ES2017` instead of `ES3`.
 - The bundles are generated with TSC `module` as `ESNext` instead of `ES2015`.
-
+- Add `AggregateTransformConfig`.
 
 ### Aggregate Transform
 ```js
