@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
 * or more contributor license agreements.  See the NOTICE file
@@ -85,23 +86,6 @@ export type OptionSourceDataArrayRows<VAL extends OptionDataValue = OptionDataVa
 export type OptionSourceDataObjectRows<VAL extends OptionDataValue = OptionDataValue> =
     Array<Dictionary<VAL>>;
 
-export interface ExternalDataTransform<TO extends DataTransformOption = DataTransformOption> {
-    // Must include namespace like: 'ecStat:regression'
-    type: string;
-    __isBuiltIn?: boolean;
-    transform: (
-        param: ExternalDataTransformParam<TO>
-    ) => ExternalDataTransformResultItem | ExternalDataTransformResultItem[];
-}
-
-interface ExternalDataTransformParam<TO extends DataTransformOption = DataTransformOption> {
-    // This is the first source in upstreamList. In most cases,
-    // there is only one upstream source.
-    upstream: ExternalSource;
-    upstreamList: ExternalSource[];
-    config: TO['config'];
-}
-
 export interface ExternalDataTransformResultItem {
     /**
      * If `data` is null/undefined, inherit upstream data.
@@ -119,6 +103,41 @@ export interface ExternalDataTransformResultItem {
     dimensions?: DimensionDefinitionLoose[];
 }
 
+
+interface ExternalDataTransformParam<TO extends DataTransformOption = DataTransformOption> {
+    // This is the first source in upstreamList. In most cases,
+    // there is only one upstream source.
+    upstream: ExternalSource;
+    upstreamList: ExternalSource[];
+    config: TO['config'];
+}
+
+export interface ExternalDataTransform<TO extends DataTransformOption = DataTransformOption> {
+    // Must include namespace like: 'ecStat:regression'
+    type: string;
+    __isBuiltIn?: boolean;
+    transform: (
+        param: ExternalDataTransformParam<TO>
+    ) => ExternalDataTransformResultItem | ExternalDataTransformResultItem[];
+}
+
+// #region Setting up OptionSourceData
+declare type OptionId = string | number;
+declare type OptionName = string | number;
+declare type OptionDataItemObject<T> = {
+    id?: OptionId;
+    name?: OptionName;
+    groupId?: OptionId;
+    value?: T[] | T;
+    selected?: boolean;
+};
+declare type OptionDataItemOriginal<VAL extends OptionDataValue = OptionDataValue> = VAL | VAL[] | OptionDataItemObject<VAL>;
+declare type OptionSourceDataOriginal<VAL extends OptionDataValue = OptionDataValue, ORIITEM extends OptionDataItemOriginal<VAL> = OptionDataItemOriginal<VAL>> = ArrayLike<ORIITEM>;
+declare type OptionSourceDataKeyedColumns<VAL extends OptionDataValue = OptionDataValue> = Dictionary<ArrayLike<VAL>>;
+declare type OptionSourceDataTypedArray = ArrayLike<number>;
+declare type OptionSourceData<VAL extends OptionDataValue = OptionDataValue, ORIITEM extends OptionDataItemOriginal<VAL> = OptionDataItemOriginal<VAL>> = OptionSourceDataOriginal<VAL, ORIITEM> | OptionSourceDataObjectRows<VAL> | OptionSourceDataArrayRows<VAL> | OptionSourceDataKeyedColumns<VAL> | OptionSourceDataTypedArray;
+// #endregion
+
 export type DataTransformDataItem = ExternalDataTransformResultItem['data'][number];
 
 export interface ExternalDimensionDefinition extends Partial<DimensionDefinition> {
@@ -128,9 +147,8 @@ export interface ExternalDimensionDefinition extends Partial<DimensionDefinition
 
 export interface ExternalSource {
     sourceFormat: SourceFormat;
-    getRawDataItem(dataIndex: number): number;
     getRawDataItem(dataIndex: number): DataTransformDataItem;
-    cloneRawData(): OptionSourceDataArrayRows | OptionSourceDataObjectRows;
+    cloneRawData(): OptionSourceData; // Earlier it was `OptionSourceDataArrayRows | OptionSourceDataObjectRows`. Changed to OptionSourceData to satisfy type mismatch in the consumer apps/packages
     getDimensionInfo(dim: DimensionLoose): ExternalDimensionDefinition;
     cloneAllDimensionInfo(): ExternalDimensionDefinition[];
     count(): number;
