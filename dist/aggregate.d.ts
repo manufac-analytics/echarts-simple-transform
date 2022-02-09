@@ -1,14 +1,15 @@
 import { DataTransformOption, DimensionLoose, DimensionName, ExternalDataTransform } from './types';
+export interface AggregateTransformConfig {
+    resultDimensions: {
+        name: DimensionName;
+        from: DimensionLoose;
+        method: AggregateMethodLoose;
+    }[];
+    groupBy: DimensionLoose;
+}
 export interface AggregateTransformOption extends DataTransformOption {
     type: 'ecSimpleTransform:aggregate';
-    config: {
-        resultDimensions: {
-            name: DimensionName;
-            from: DimensionLoose;
-            method: AggregateMethodLoose;
-        }[];
-        groupBy: DimensionLoose;
-    };
+    config: AggregateTransformConfig;
 }
 declare const METHOD_INTERNAL: {
     readonly SUM: true;
