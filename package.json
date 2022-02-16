@@ -17,7 +17,8 @@
     "build": "node build/build.js",
     "release": "node build/build.js --release",
     "lint": "eslint src/**/*.ts",
-    "cp2echarts": "cp ./dist/ecSimpleTransform.js ../echarts/test/lib/ecSimpleTransform.js"
+    "cp2echarts": "cp ./dist/ecSimpleTransform.js ../echarts/test/lib/ecSimpleTransform.js",
+    "postpublish": "npm config set @manufac-analytics:registry 'https://npm.pkg.github.com' && yarn publish --access public && npm config delete @manufac-analytics:registry"
   },
   "dependencies": {
     "tslib": "^2.3.1"
