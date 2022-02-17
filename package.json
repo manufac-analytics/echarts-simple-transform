@@ -1,6 +1,6 @@
 {
-  "name": "@manufac-analytics/echarts-simple-transform",
-  "version": "2.0.9",
+  "name": "@manufac/echarts-simple-transform",
+  "version": "2.0.10",
   "description": "Some simple data transforms for Apache ECharts 5",
   "license": "Apache-2.0",
   "main": "dist/ecSimpleTransform.js",
@@ -17,8 +17,7 @@
     "build": "node build/build.js",
     "release": "node build/build.js --release",
     "lint": "eslint src/**/*.ts",
-    "cp2echarts": "cp ./dist/ecSimpleTransform.js ../echarts/test/lib/ecSimpleTransform.js",
-    "custompublish": "npm config set @manufac-analytics:registry 'https://npm.pkg.github.com' && npm publish && npm config delete @manufac-analytics:registry"
+    "cp2echarts": "cp ./dist/ecSimpleTransform.js ../echarts/test/lib/ecSimpleTransform.js"
   },
   "dependencies": {
     "tslib": "^2.3.1"
