@@ -37,7 +37,7 @@ export interface DataTransformOption {
     config: DataTransformConfig;
     print?: boolean;
 }
-export declare type OptionDataValue = string | number | Date;
+export declare type OptionDataValue = string | number | Date | null | undefined;
 export declare type OptionSourceDataArrayRows<VAL extends OptionDataValue = OptionDataValue> = Array<Array<VAL>>;
 export declare type OptionSourceDataObjectRows<VAL extends OptionDataValue = OptionDataValue> = Array<Dictionary<VAL>>;
 export interface ExternalDataTransformResultItem {
