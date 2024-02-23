@@ -79,7 +79,7 @@ export interface DataTransformOption {
     print?: boolean;
 }
 
-export type OptionDataValue = string | number | Date;
+export type OptionDataValue = string | number | Date | null | undefined;
 
 export type OptionSourceDataArrayRows<VAL extends OptionDataValue = OptionDataValue> =
     Array<Array<VAL>>;
